@@ -20,7 +20,7 @@ export function SiteHeader({ site, nav }: Pick<SiteContent, "site" | "nav" >) {
         </a>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Chính">
-          {nav.map((item) => (
+          {nav.map((item: any) => (
             <a
               key={item.href + item.label}
               href={item.href}
