@@ -96,7 +96,7 @@ export async function ArticleDetailPage({ section, slug }: { section: ArticleSec
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               {article.tags.map((t) => (
-                <Badge key={t} asChild variant="outline">
+                <Badge key={t} variant="outline">
                   <Link href={`/tim-kiem?q=${encodeURIComponent(t)}`}>#{t}</Link>
                 </Badge>
               ))}
