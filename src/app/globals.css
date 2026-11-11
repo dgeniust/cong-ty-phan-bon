@@ -40,6 +40,7 @@
 
   --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
   --font-script: "Dancing Script", cursive;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
 
   --shadow-soft: 0 1px 2px rgb(20 63 27 / 0.04), 0 8px 24px -12px rgb(20 63 27 / 0.12);
   --shadow-lift: 0 2px 4px rgb(20 63 27 / 0.04), 0 20px 40px -20px rgb(20 63 27 / 0.22);
@@ -141,10 +142,25 @@
   }
 }
 
+/* Components layer → any utility class (colour, leading, tracking) overrides it. */
+@layer components {
+  /* "Mùa Vàng": tiêu đề serif in hoa – chỉ cho tiêu đề ngắn (design.md §1) */
+  .serif-caps {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    text-transform: uppercase;
+    line-height: 1.08;
+    letter-spacing: 0.03em;
+  }
+}
+
 @layer utilities {
   /* Gạch vàng ngắn dưới tiêu đề section */
   .rule-sun {
     @apply mt-4 block h-[3px] w-12 rounded-full bg-sun-400;
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
   }
   /* Nội dung bài viết dễ đọc */
   .prose-kn {
