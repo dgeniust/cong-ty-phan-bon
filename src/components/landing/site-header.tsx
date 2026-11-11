@@ -47,10 +47,15 @@ export function SiteHeader({ site, nav }: Pick<SiteContent, "site" | "nav">) {
       >
         Bỏ qua đến nội dung chính
       </a>
+      {/* Transparent on the page colour; turns into a white bar once scrolled (design.md §5.1). */}
       <header
         className={cn(
-          "sticky top-0 z-50 bg-white/95 backdrop-blur-md transition-shadow duration-300",
-          scrolled && "shadow-[0_1px_0_rgb(20_63_27/0.06),0_8px_24px_-16px_rgb(20_63_27/0.18)]"
+          "sticky top-0 z-50 transition-[background-color,box-shadow] duration-300",
+          scrolled
+            ? "bg-white/95 shadow-[0_8px_24px_-16px_rgb(20_63_27/0.22)] backdrop-blur-md"
+            : pathname === "/"
+              ? "bg-paper"
+              : "bg-white"
         )}
       >
         <Container className="flex h-[76px] items-center justify-between gap-6">
@@ -58,7 +63,7 @@ export function SiteHeader({ site, nav }: Pick<SiteContent, "site" | "nav">) {
             <Logo prefix={site.companyPrefix} name={site.companyName} slogan={site.slogan} logo={site.logo} compact />
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Điều hướng chính">
+          <nav className="hidden items-center gap-2 lg:flex" aria-label="Điều hướng chính">
             {links.map((item) => {
               const active = isActive(item.href);
               return (
@@ -67,18 +72,11 @@ export function SiteHeader({ site, nav }: Pick<SiteContent, "site" | "nav">) {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors",
-                    active ? "text-brand-900" : "text-ink-muted hover:text-brand-900"
+                    "rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                    active ? "bg-brand-900 text-white" : "bg-brand-100/70 text-brand-900 hover:bg-brand-100"
                   )}
                 >
                   {item.label}
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "absolute inset-x-3.5 -bottom-0.5 h-[3px] rounded-full bg-sun-400 transition-opacity",
-                      active ? "opacity-100" : "opacity-0"
-                    )}
-                  />
                 </Link>
               );
             })}
@@ -90,7 +88,7 @@ export function SiteHeader({ site, nav }: Pick<SiteContent, "site" | "nav">) {
                 <Search className="size-5" />
               </Link>
             </Button>
-            <Button asChild variant="sun" className="hidden sm:inline-flex">
+            <Button asChild variant="sun" className="hidden lg:inline-flex">
               <a href={`tel:${site.phone}`} aria-label={`Gọi ${site.phone}`}>
                 <Phone className="size-4" />
                 <span className="tabular-nums">{site.phone}</span>

@@ -7,7 +7,7 @@ import { logoutAction, resetContentAction, saveContentAction } from "@/app/admin
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SiteContent } from "@/lib/content/schema";
-import { Field, Grid, IconSelect, ImageField, ListEditor, Section, StringListEditor, SwitchField } from "./fields";
+import { Field, Grid, IconSelect, ImageField, ListEditor, Section, StringListEditor } from "./fields";
 
 export function ContentEditor({ initial, user }: { initial: SiteContent; user: string }) {
   const [content, setContent] = useState(initial);
@@ -125,8 +125,10 @@ export function ContentEditor({ initial, user }: { initial: SiteContent; user: s
 
           {/* ---------- Hero ---------- */}
           <TabsContent value="hero" className="space-y-4">
-            <Section title="Banner chính (carousel)">
-              <SwitchField label="Tự động chuyển slide (6 giây)" checked={hero.autoplay} onChange={(v) => patch("hero", { autoplay: v })} />
+            <Section title="Banner chính">
+              <p className="text-sm text-muted-foreground">
+                Slide 1 hiển thị trong khung vòm lớn ở giữa, slide 2 trong khung vòm nhỏ bên phải. Câu chữ viết tay của slide 1 là tiêu đề chính (H1) của trang.
+              </p>
               <ListEditor
                 items={hero.slides}
                 min={1}
@@ -147,8 +149,23 @@ export function ContentEditor({ initial, user }: { initial: SiteContent; user: s
                       <Field label="Nút – nhãn" value={s.ctaLabel} onChange={(v) => u({ ctaLabel: v })} />
                       <Field label="Nút – liên kết" value={s.ctaHref} onChange={(v) => u({ ctaHref: v })} />
                     </Grid>
-                    <ImageField label="Ảnh bên phải" value={s.image} onChange={(v) => u({ image: v })} />
+                    <ImageField label="Ảnh (nên dùng ảnh bao bì tách nền)" value={s.image} onChange={(v) => u({ image: v })} />
                   </div>
+                )}
+              />
+            </Section>
+            <Section title="Số liệu dưới banner" description="Nên dùng số thật, ngắn gọn. Hiển thị tối đa 3 số.">
+              <ListEditor
+                items={hero.stats}
+                onChange={(v) => patch("hero", { stats: v })}
+                create={() => ({ value: "100+", label: "Mô tả" })}
+                itemLabel={(st) => `${st.value} ${st.label}`}
+                addLabel="Thêm số liệu"
+                renderItem={(st, u) => (
+                  <Grid>
+                    <Field label="Con số" value={st.value} onChange={(v) => u({ value: v })} />
+                    <Field label="Mô tả" value={st.label} onChange={(v) => u({ label: v })} />
+                  </Grid>
                 )}
               />
             </Section>
