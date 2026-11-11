@@ -18,33 +18,34 @@ export function ArticleListPage({ section, page: pageParam }: { section: Article
 
   return (
     <>
-      <PageHero title={meta.title} description={meta.description} crumbs={[{ label: meta.title }]} />
-      <Container className="py-10 md:py-14">
-        <nav aria-label="Chuyên mục" className="mb-8 flex flex-wrap gap-2">
+      <PageHero title={meta.title} description={meta.description} crumbs={[{ label: meta.title }]}>
+        <nav aria-label="Chuyên mục" className="mt-8 flex flex-wrap gap-2">
           {(Object.keys(articleSections) as ArticleSection[]).map((s) => (
             <Link
               key={s}
               href={`/${s}`}
               aria-current={s === section ? "page" : undefined}
               className={cn(
-                "rounded-full px-4 py-2 text-sm font-medium transition",
-                s === section ? "bg-brand-600 text-white" : "border bg-white text-ink hover:bg-muted hover:text-brand-700"
+                "inline-flex h-10 items-center rounded-full px-5 text-sm font-medium transition-colors",
+                s === section ? "bg-brand-800 text-white" : "bg-white text-ink hover:text-brand-900 hover:shadow-soft"
               )}
             >
               {articleSections[s].title}
             </Link>
           ))}
         </nav>
+      </PageHero>
 
+      <Container className="py-14 md:py-20">
         {first ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <ArticleCard article={first} featured={page === 1} />
+          <div className="grid gap-x-6 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+            <ArticleCard article={first} featured={page === 1} headingLevel="h2" />
             {rest.map((a) => (
-              <ArticleCard key={a.slug} article={a} />
+              <ArticleCard key={a.slug} article={a} headingLevel="h2" />
             ))}
           </div>
         ) : (
-          <EmptyState title="Chưa có bài viết" description="Chuyên mục đang được cập nhật, vui lòng quay lại sau." />
+          <EmptyState title="Chuyên mục chưa có bài viết" description="Bài viết mới sẽ sớm được đăng. Trong lúc chờ, bạn có thể xem các chuyên mục khác." />
         )}
         <Pagination page={page} totalPages={totalPages} basePath={`/${section}`} />
       </Container>
