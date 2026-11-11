@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { createElement, useId, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, ImageUp, Loader2, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -63,19 +63,18 @@ export function SwitchField({ label, checked, onChange }: { label: string; check
 
 export function IconSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const id = useId();
-  const Icon = getIcon(value);
   return (
     <div className="space-y-1.5">
       <Label htmlFor={id}>Icon</Label>
       <div className="flex items-center gap-2">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sun-300/70 text-brand-700">
-          <Icon className="size-5" />
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700">
+          {createElement(getIcon(value), { className: "size-5", "aria-hidden": true })}
         </span>
         <select
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30"
+          className="h-12 w-full rounded-xl border border-input bg-white px-4 text-[15px] outline-none hover:border-brand-300 focus-visible:border-brand-500 focus-visible:ring-4 focus-visible:ring-brand-500/15"
         >
           {ICON_NAMES.map((n) => (
             <option key={n} value={n}>
@@ -115,7 +114,7 @@ export function ImageField({ label, value, onChange }: { label: string; value: s
     <div className="space-y-1.5">
       <Label htmlFor={id}>{label}</Label>
       <div className="flex gap-3">
-        <div className="relative size-20 shrink-0 overflow-hidden rounded-xl border bg-brand-50">
+        <div className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-surface">
           {value && <SmartImage src={value} alt="" fill sizes="80px" className="object-cover" />}
         </div>
         <div className="flex-1 space-y-2">
@@ -157,7 +156,7 @@ export function ListEditor<T extends object>({ items, onChange, create, itemLabe
   return (
     <div className="space-y-3">
       {items.map((item, i) => (
-        <div key={i} className="rounded-xl border bg-brand-50/50 p-4">
+        <div key={i} className="rounded-2xl bg-surface p-4 md:p-5">
           <div className="mb-3 flex items-center justify-between gap-2">
             <span className="text-sm font-semibold text-brand-800">
               #{i + 1} · {itemLabel(item, i) || "(chưa đặt tên)"}

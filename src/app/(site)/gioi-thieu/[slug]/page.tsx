@@ -10,7 +10,14 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const a = getArticle("gioi-thieu", (await params).slug);
-  return a ? { title: `${a.title} | Kim Ngoan`, description: a.excerpt } : {};
+  if (!a) return {};
+  const url = `/gioi-thieu/${a.slug}`;
+  return {
+    title: a.title,
+    description: a.excerpt,
+    alternates: { canonical: url },
+    openGraph: { type: "article", url, title: a.title, description: a.excerpt, images: [a.cover], publishedTime: a.date, authors: [a.author] },
+  };
 }
 
 export default async function Page({ params }: { params: Params }) {

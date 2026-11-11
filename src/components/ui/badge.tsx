@@ -1,24 +1,23 @@
-import { mergeProps } from "@base-ui/react/merge-props"
-import { useRender } from "@base-ui/react/use-render"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "inline-flex h-6 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full px-2.5 text-xs font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-brand-500 [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-brand-100 text-brand-800",
-        sun: "border-transparent bg-sun-200 text-brand-800",
-        solid: "border-transparent bg-brand-600 text-white",
-        outline: "border-brand-200 bg-white text-brand-700",
+        default: "bg-brand-50 text-brand-800",
+        sun: "bg-sun-200 text-brand-950",
+        solid: "bg-brand-800 text-white",
+        outline: "bg-surface text-brand-800 hover:bg-surface-strong",
+        glass: "bg-white/90 text-brand-900 backdrop-blur",
       },
     },
-    defaultVariants: {
-      variant: "default",
-    },
+    defaultVariants: { variant: "default" },
   }
-)
+);
 
 function Badge({
   className,
@@ -28,18 +27,10 @@ function Badge({
 }: useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
   return useRender({
     defaultTagName: "span",
-    props: mergeProps<"span">(
-      {
-        className: cn(badgeVariants({ variant }), className),
-      },
-      props
-    ),
+    props: mergeProps<"span">({ className: cn(badgeVariants({ variant }), className) }, props),
     render,
-    state: {
-      slot: "badge",
-      variant,
-    },
-  })
+    state: { slot: "badge", variant },
+  });
 }
 
-export { Badge, badgeVariants }
+export { Badge, badgeVariants };

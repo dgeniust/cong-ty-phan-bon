@@ -1,75 +1,146 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, Phone, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, Phone, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/shared/container";
 import { Logo } from "@/components/shared/logo";
 import type { SiteContent } from "@/lib/content/schema";
+import { resolveHref } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader({ site, nav }: Pick<SiteContent, "site" | "nav" >) {
+export function SiteHeader({ site, nav }: Pick<SiteContent, "site" | "nav">) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(nav[0]?.href);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Lock page scroll while the mobile menu is open; close it with Escape.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const links = nav.map((item) => ({ ...item, href: resolveHref(item.href) }));
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : !href.includes("#") && pathname.startsWith(href));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-white/95 backdrop-blur">
-      <Container className="flex h-20 items-center justify-between gap-6">
-        <a href="#trang-chu" aria-label={site.companyName}>
-          <Logo prefix={site.companyPrefix} name={site.companyName} slogan={site.slogan} logo={site.logo} />
-        </a>
+    <>
+      <a
+        href="#noi-dung"
+        className="sr-only z-[60] rounded-full bg-brand-900 px-5 py-3 text-sm font-semibold text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+      >
+        Bỏ qua đến nội dung chính
+      </a>
+      <header
+        className={cn(
+          "sticky top-0 z-50 bg-white/95 backdrop-blur-md transition-shadow duration-300",
+          scrolled && "shadow-[0_1px_0_rgb(20_63_27/0.06),0_8px_24px_-16px_rgb(20_63_27/0.18)]"
+        )}
+      >
+        <Container className="flex h-[76px] items-center justify-between gap-6">
+          <Link href="/" aria-label={`${site.companyPrefix} ${site.companyName} – Trang chủ`} className="shrink-0 rounded-lg">
+            <Logo prefix={site.companyPrefix} name={site.companyName} slogan={site.slogan} logo={site.logo} compact />
+          </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Chính">
-          {nav.map((item: any) => (
-            <a
-              key={item.href + item.label}
-              href={item.href}
-              onClick={() => setActive(item.href)}
-              className={cn(
-                "relative py-2 text-sm font-medium transition-colors hover:text-brand-600",
-                "after:absolute after:inset-x-0 after:-bottom-0.5 after:h-1 after:rounded-full after:bg-sun-300 after:transition-transform after:duration-300",
-                active === item.href ? "text-brand-600 after:scale-x-100" : "text-ink after:scale-x-0"
-              )}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Điều hướng chính">
+            {links.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href + item.label}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "relative rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors",
+                    active ? "text-brand-900" : "text-ink-muted hover:text-brand-900"
+                  )}
+                >
+                  {item.label}
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "absolute inset-x-3.5 -bottom-0.5 h-[3px] rounded-full bg-sun-400 transition-opacity",
+                      active ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="flex items-center gap-2">
-          <Button asChild variant="sun" className="hidden sm:inline-flex">
-            <a href={`tel:${site.phone}`}>
-              <Phone className="size-4 fill-brand-700" />
-              <span className="text-base font-bold">{site.phone}</span>
-            </a>
-          </Button>
-          <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Mở menu" onClick={() => setOpen((v) => !v)}>
-            {open ? <X /> : <Menu />}
-          </Button>
-        </div>
-      </Container>
-
-      {open && (
-        <div className="border-t border-border bg-white lg:hidden">
-          <Container className="flex flex-col py-3">
-            {nav.map((item) => (
-              <a
-                key={item.href + item.label}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="rounded-xl px-3 py-3 text-sm font-medium text-ink hover:bg-muted hover:text-brand-700"
-              >
-                {item.label}
-              </a>
-            ))}
-            <Button asChild variant="sun" className="mt-2 sm:hidden">
-              <a href={`tel:${site.phone}`}>
-                <Phone className="size-4" /> {site.phone}
+          <div className="flex items-center gap-1.5">
+            <Button asChild variant="ghost" size="icon" aria-label="Tìm kiếm">
+              <Link href="/tim-kiem">
+                <Search className="size-5" />
+              </Link>
+            </Button>
+            <Button asChild variant="sun" className="hidden sm:inline-flex">
+              <a href={`tel:${site.phone}`} aria-label={`Gọi ${site.phone}`}>
+                <Phone className="size-4" />
+                <span className="tabular-nums">{site.phone}</span>
               </a>
             </Button>
-          </Container>
-        </div>
-      )}
-    </header>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              aria-label={open ? "Đóng menu" : "Mở menu"}
+              aria-expanded={open}
+              aria-controls="menu-di-dong"
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            </Button>
+          </div>
+        </Container>
+
+        {open && (
+          <div id="menu-di-dong" className="fixed inset-x-0 bottom-0 top-[76px] overflow-y-auto bg-white lg:hidden">
+            <Container className="flex flex-col py-6">
+              <nav aria-label="Điều hướng di động" className="flex flex-col">
+                {links.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <Link
+                      key={item.href + item.label}
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(
+                        "rounded-xl px-4 py-4 text-lg font-medium transition-colors",
+                        active ? "bg-surface text-brand-900" : "text-ink hover:bg-surface"
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+              <Button asChild variant="sun" size="lg" className="mt-6">
+                <a href={`tel:${site.phone}`}>
+                  <Phone /> Gọi {site.phone}
+                </a>
+              </Button>
+            </Container>
+          </div>
+        )}
+      </header>
+    </>
   );
 }
