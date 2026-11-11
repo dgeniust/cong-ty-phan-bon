@@ -28,7 +28,12 @@ export const siteContentSchema = z.object({
     seoDescription: text,
   }),
   nav: z.array(link),
-  hero: z.object({ autoplay: z.boolean(), slides: z.array(heroSlideSchema).min(1) }),
+  hero: z.object({
+    autoplay: z.boolean(),
+    slides: z.array(heroSlideSchema).min(1),
+    /** Số liệu tạo niềm tin dưới hero (VD: "10+" / "Năm hoạt động"). */
+    stats: z.array(z.object({ value: text, label: text })).default([]),
+  }),
   features: z.array(z.object({ icon: text, title: text, description: text })),
   products: z.object({
     title: text,

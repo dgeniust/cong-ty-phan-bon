@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { JsonLd } from "@/components/shared/json-ld";
+import { MobileActionBar } from "@/components/site/mobile-action-bar";
 import { getContent } from "@/lib/content/store";
 import { absoluteUrl } from "@/lib/site";
 
@@ -33,6 +34,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         {children}
       </main>
       <SiteFooter site={site} footer={content.footer} />
+      <MobileActionBar phone={site.phone} />
     </>
   );
 }

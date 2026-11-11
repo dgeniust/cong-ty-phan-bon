@@ -24,6 +24,10 @@ export const defaultContent: SiteContent = {
   ],
   hero: {
     autoplay: true,
+    stats: [
+      { value: "10+", label: "Năm đồng hành cùng nhà nông" },
+      { value: "5.000+", label: "Nhà vườn tin dùng" },
+    ],
     slides: [
       {
         eyebrow: "ĐẠI LÝ PHÂN BÓN",
