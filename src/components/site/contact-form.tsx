@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Vui lòng nhập họ tên"),
@@ -49,11 +48,11 @@ export function ContactForm({ defaultMessage = "" }: { defaultMessage?: string }
 
   if (status === "sent")
     return (
-      <div className="flex flex-col items-center py-10 text-center">
-        <span className="grid size-16 place-items-center rounded-full bg-brand-100 text-brand-600">
+      <div className="flex flex-col items-center py-10 text-center" role="status">
+        <span className="grid size-16 place-items-center rounded-2xl bg-white text-brand-600 shadow-soft">
           <CheckCircle2 className="size-9" aria-hidden />
         </span>
-        <h3 className="mt-4 text-xl font-bold text-brand-800">Gửi thành công!</h3>
+        <h3 className="mt-5 text-xl font-semibold text-brand-900">Đã gửi lời nhắn</h3>
         <p className="mt-2 max-w-sm text-sm text-ink-muted">
           Cảm ơn {values.name}. Kim Ngoan sẽ liên hệ lại với bạn qua số {values.phone} trong thời gian sớm nhất.
         </p>
@@ -77,47 +76,47 @@ export function ContactForm({ defaultMessage = "" }: { defaultMessage?: string }
     onChange: set(k),
     "aria-invalid": !!errors[k] || undefined,
     "aria-describedby": errors[k] ? `contact-${k}-error` : undefined,
-    className: cn("bg-white", errors[k] && "border-destructive focus-visible:ring-destructive/20"),
+    "aria-required": k !== "email" || undefined,
   });
-  const Err = ({ k }: { k: keyof Values }) =>
+  const err = (k: keyof Values) =>
     errors[k] ? (
-      <p id={`contact-${k}-error`} className="text-xs text-destructive">
+      <p id={`contact-${k}-error`} className="text-[13px] text-destructive">
         {errors[k]}
       </p>
     ) : null;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
+    <form onSubmit={onSubmit} noValidate className="space-y-5">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div className="space-y-2">
           <Label htmlFor="contact-name">
             Họ và tên <span className="text-destructive">*</span>
           </Label>
           <Input {...field("name")} autoComplete="name" placeholder="Nguyễn Văn A" />
-          <Err k="name" />
+          {err("name")}
         </div>
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <Label htmlFor="contact-phone">
             Số điện thoại <span className="text-destructive">*</span>
           </Label>
           <Input {...field("phone")} type="tel" autoComplete="tel" inputMode="tel" placeholder="0909 123 456" />
-          <Err k="phone" />
+          {err("phone")}
         </div>
       </div>
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <Label htmlFor="contact-email">Email</Label>
         <Input {...field("email")} type="email" autoComplete="email" placeholder="email@example.com" />
-        <Err k="email" />
+        {err("email")}
       </div>
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <Label htmlFor="contact-message">
           Nội dung lời nhắn <span className="text-destructive">*</span>
         </Label>
         <Textarea {...field("message")} rows={5} placeholder="Bạn cần tư vấn sản phẩm cho loại cây trồng nào, diện tích bao nhiêu…" />
-        <Err k="message" />
+        {err("message")}
       </div>
       <Button type="submit" variant="sun" size="lg" disabled={status === "sending"} className="w-full sm:w-auto">
-        {status === "sending" ? <Loader2 className="animate-spin" /> : <Send />} Gửi lời nhắn
+        {status === "sending" ? <Loader2 className="animate-spin" /> : <Send />} {status === "sending" ? "Đang gửi…" : "Gửi lời nhắn"}
       </Button>
     </form>
   );

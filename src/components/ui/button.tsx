@@ -5,23 +5,23 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-colors duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-xs hover:bg-brand-700",
-        sun: "bg-sun-200 text-brand-800 shadow-soft hover:bg-sun-300 hover:shadow-lift",
-        brand: "bg-brand-700 text-white hover:bg-brand-800",
-        destructive: "bg-destructive text-white shadow-xs hover:bg-destructive/90",
-        outline: "border bg-background shadow-xs hover:bg-muted hover:text-brand-700",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-brand-200",
-        ghost: "hover:bg-muted hover:text-brand-700",
-        link: "text-primary underline-offset-4 hover:underline",
+        default: "bg-brand-800 text-white hover:bg-brand-900",
+        brand: "bg-brand-800 text-white hover:bg-brand-900",
+        sun: "bg-sun-300 text-brand-950 hover:bg-sun-400",
+        destructive: "bg-destructive text-white hover:bg-destructive/90",
+        outline: "bg-surface text-brand-800 hover:bg-surface-strong",
+        secondary: "bg-white text-brand-900 shadow-soft hover:bg-surface",
+        ghost: "text-ink hover:bg-surface hover:text-brand-800",
+        link: "h-auto px-0 text-brand-700 underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10 px-5 has-[>svg]:px-4",
-        sm: "h-8 px-4 text-xs has-[>svg]:px-3",
-        lg: "h-12 px-7 text-base has-[>svg]:px-6",
+        default: "h-11 px-6 has-[>svg]:px-5",
+        sm: "h-9 px-4 text-[13px] has-[>svg]:px-3.5",
+        lg: "h-12 px-7 text-[15px] has-[>svg]:px-6",
         icon: "size-10",
       },
     },
@@ -35,8 +35,7 @@ function Button({
   size,
   asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & { asChild?: boolean }) {
+}: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean }) {
   const Comp = asChild ? Slot : "button";
   return <Comp data-slot="button" className={cn(buttonVariants({ variant, size, className }))} {...props} />;
 }

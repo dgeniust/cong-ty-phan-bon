@@ -12,7 +12,8 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const category = getCategory((await params).slug);
-  return { title: category ? `${category.name} | Kim Ngoan` : "Danh mục" };
+  if (!category) return { title: "Danh mục" };
+  return { title: category.name, description: category.description, alternates: { canonical: `/danh-muc/${category.slug}` } };
 }
 
 export default async function CategoryPage({
