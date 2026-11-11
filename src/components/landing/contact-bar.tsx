@@ -1,40 +1,44 @@
-import { MapPin, Phone, PhoneCall } from "lucide-react";
+import Link from "next/link";
+import { MapPin, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Container } from "@/components/shared/container";
-import { LeafDecor } from "@/components/shared/leaf-decor";
 import type { SiteContent } from "@/lib/content/schema";
 
+/** Closing call-to-action band. */
 export function ContactBar({ site, contact }: { site: SiteContent["site"]; contact: SiteContent["contact"] }) {
   return (
-    <section
-      id="lien-he"
-      className="relative scroll-mt-20 overflow-hidden bg-gradient-to-r from-brand-50 via-sun-100 to-brand-50 py-8"
-    >
-      <LeafDecor className="absolute -left-2 top-1/2 hidden w-20 -translate-y-1/2 text-brand-400/70 md:block" />
-      <LeafDecor flip className="absolute -right-2 top-1/2 hidden w-20 -translate-y-1/2 text-brand-400/70 md:block" />
-      <Container className="grid items-center gap-6 md:grid-cols-3 md:divide-x md:divide-brand-200">
-        <div className="flex items-center justify-center gap-3">
-          <span className="grid size-12 place-items-center rounded-full bg-brand-700 text-white">
-            <PhoneCall className="size-6" aria-hidden />
-          </span>
-          <div>
-            <p className="text-lg font-bold uppercase text-brand-800">{contact.title}</p>
-            <p className="text-sm text-ink-muted">{contact.subtitle}</p>
-          </div>
-        </div>
-        <div className="flex justify-center">
-          <a
-            href={`tel:${site.phone}`}
-            className="inline-flex items-center gap-3 rounded-full bg-sun-200 px-8 py-3 text-2xl font-extrabold text-brand-800 shadow-soft transition hover:bg-sun-300 hover:shadow-lift md:text-3xl"
-          >
-            <Phone className="size-7 fill-brand-700" aria-hidden />
-            {site.phone}
-          </a>
-        </div>
-        <div className="flex items-center justify-center gap-3">
-          <MapPin className="size-8 fill-brand-700 text-white" aria-hidden />
-          <div>
-            <p className="font-bold text-brand-800">{contact.addressLabel}</p>
-            <p className="text-sm text-ink-muted">{site.address}</p>
+    <section id="lien-he" aria-labelledby="lien-he-title" className="pb-20 md:pb-28">
+      <Container>
+        <div className="relative overflow-hidden rounded-3xl bg-brand-900 px-7 py-12 md:px-14 md:py-16">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-brand-700/40 blur-2xl"
+          />
+          <div className="relative grid items-center gap-10 lg:grid-cols-[1.3fr_1fr]">
+            <div>
+              <h2 id="lien-he-title" className="text-[1.75rem] font-bold leading-tight tracking-tight text-white md:text-[2.5rem]">
+                {contact.title}
+              </h2>
+              {contact.subtitle && <p className="mt-3 text-lg text-white/75">{contact.subtitle}</p>}
+              <p className="mt-6 flex items-start gap-2.5 text-[15px] text-white/70">
+                <MapPin className="mt-0.5 size-[18px] shrink-0 text-sun-300" aria-hidden />
+                <span>
+                  <span className="sr-only">{contact.addressLabel}: </span>
+                  {site.address}
+                </span>
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col lg:items-end">
+              <Button asChild variant="sun" size="lg" className="h-14 px-8 text-lg">
+                <a href={`tel:${site.phone}`}>
+                  <Phone className="size-5" />
+                  <span className="tabular-nums">{site.phone}</span>
+                </a>
+              </Button>
+              <Button asChild size="lg" className="h-14 bg-white/10 px-8 text-white hover:bg-white/15">
+                <Link href="/lien-he">Gửi yêu cầu tư vấn</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </Container>

@@ -1,51 +1,60 @@
-import { Check, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Container } from "@/components/shared/container";
+import { MoreLink } from "@/components/shared/more-link";
 import { SmartImage } from "@/components/shared/smart-image";
 import type { SiteContent } from "@/lib/content/schema";
+import { resolveHref } from "@/lib/site";
 import { SectionHeading } from "./section-heading";
 
 export function ProductsSection({ products }: { products: SiteContent["products"] }) {
   return (
-    <section id="san-pham" className="scroll-mt-20 py-14 md:py-20">
+    <section id="san-pham" aria-labelledby="san-pham-title" className="pb-20 pt-24 md:pb-28 md:pt-32">
       <Container>
-        <SectionHeading title={products.title} subtitle={products.subtitle} />
-        <div className="grid gap-6 md:grid-cols-2">
-          {products.items.map((p, i) => (
-            <article
-              key={i}
-              className="group grid overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-r from-white to-brand-50 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift sm:grid-cols-[1.1fr_1fr]"
-            >
-              <div className="relative aspect-4/3 overflow-hidden sm:aspect-auto sm:min-h-56">
-                <SmartImage
-                  src={p.image}
-                  alt={p.title}
-                  fill
-                  sizes="(min-width: 768px) 25vw, 100vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-y-0 right-0 hidden w-16 bg-gradient-to-r from-transparent to-white/90 sm:block" />
-              </div>
-              <div className="flex flex-col justify-center p-6">
-                <h3 className="text-lg font-bold uppercase text-brand-700 md:text-xl">{p.title}</h3>
-                <ul className="mt-4 space-y-2.5">
-                  {p.bullets.map((b, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-ink">
-                      <Check className="size-4 shrink-0 text-brand-500" strokeWidth={3} aria-hidden />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-                {p.ctaLabel && (
-                  <Button asChild variant="brand" size="sm" className="mt-5 w-fit">
-                    <a href={p.ctaHref}>
-                      {p.ctaLabel} <ChevronRight />
-                    </a>
-                  </Button>
-                )}
-              </div>
-            </article>
-          ))}
+        <SectionHeading
+          id="san-pham-title"
+          title={products.title}
+          subtitle={products.subtitle}
+          action={<MoreLink href="/san-pham">Xem tất cả sản phẩm</MoreLink>}
+        />
+        <div className="grid gap-8 md:grid-cols-2">
+          {products.items.map((p, i) => {
+            const href = resolveHref(p.ctaHref || "/san-pham");
+            return (
+              <article key={i} className="group flex flex-col overflow-hidden rounded-3xl bg-surface">
+                <Link href={href} tabIndex={-1} aria-hidden className="relative block aspect-[16/10] overflow-hidden">
+                  <SmartImage
+                    src={p.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 45vw, 100vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  />
+                </Link>
+                <div className="flex flex-1 flex-col p-7 md:p-9">
+                  <h3 className="text-2xl font-bold tracking-tight text-brand-900">
+                    <Link href={href} className="hover:text-brand-700">
+                      {p.title}
+                    </Link>
+                  </h3>
+                  {p.bullets.length > 0 && (
+                    <ul className="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                      {p.bullets.map((b, j) => (
+                        <li key={j} className="flex items-center gap-3 text-[15px] text-ink">
+                          <span className="size-1.5 shrink-0 rounded-full bg-sun-500" aria-hidden />
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {p.ctaLabel && (
+                    <div className="mt-auto pt-8">
+                      <MoreLink href={href}>{p.ctaLabel}</MoreLink>
+                    </div>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
       </Container>
     </section>
