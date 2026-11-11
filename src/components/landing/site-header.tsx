@@ -47,71 +47,74 @@ export function SiteHeader({ site, nav }: Pick<SiteContent, "site" | "nav">) {
       >
         Bỏ qua đến nội dung chính
       </a>
-      <header
-        className={cn(
-          "sticky top-0 z-50 bg-white/95 backdrop-blur-md transition-shadow duration-300",
-          scrolled && "shadow-[0_1px_0_rgb(20_63_27/0.06),0_8px_24px_-16px_rgb(20_63_27/0.18)]"
-        )}
-      >
-        <Container className="flex h-[76px] items-center justify-between gap-6">
-          <Link href="/" aria-label={`${site.companyPrefix} ${site.companyName} – Trang chủ`} className="shrink-0 rounded-lg">
-            <Logo prefix={site.companyPrefix} name={site.companyName} slogan={site.slogan} logo={site.logo} compact />
-          </Link>
+      {/* Floating pill bar (design.md §5.1) */}
+      <header className={cn("sticky top-0 z-50 pt-3 transition-colors duration-300", scrolled ? "bg-transparent" : "bg-paper")}>
+        <Container>
+          <div
+            className={cn(
+              "flex h-16 items-center justify-between gap-4 rounded-full bg-white/95 pl-5 pr-2 backdrop-blur-md transition-shadow duration-300 md:h-[68px] md:pl-6",
+              scrolled ? "shadow-lift" : "shadow-soft",
+            )}
+          >
+            <Link href="/" aria-label={`${site.companyPrefix} ${site.companyName} – Trang chủ`} className="shrink-0 rounded-lg">
+              <Logo
+                prefix={site.companyPrefix}
+                name={site.companyName}
+                slogan=""
+                logo={site.logo}
+                compact
+                className="[&_svg]:size-9 [&>div:first-child]:size-9"
+              />
+            </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Điều hướng chính">
-            {links.map((item) => {
-              const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.href + item.label}
-                  href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "relative rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors",
-                    active ? "text-brand-900" : "text-ink-muted hover:text-brand-900"
-                  )}
-                >
-                  {item.label}
-                  <span
-                    aria-hidden
+            <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Điều hướng chính">
+              {links.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href + item.label}
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
                     className={cn(
-                      "absolute inset-x-3.5 -bottom-0.5 h-[3px] rounded-full bg-sun-400 transition-opacity",
-                      active ? "opacity-100" : "opacity-0"
+                      "rounded-full px-4 py-2 text-[15px] font-medium transition-colors",
+                      active ? "bg-brand-50 text-brand-900" : "text-ink-muted hover:text-brand-900",
                     )}
-                  />
-                </Link>
-              );
-            })}
-          </nav>
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
 
-          <div className="flex items-center gap-1.5">
-            <Button asChild variant="ghost" size="icon" aria-label="Tìm kiếm">
-              <Link href="/tim-kiem">
-                <Search className="size-5" />
-              </Link>
-            </Button>
-            <Button asChild variant="sun" className="hidden sm:inline-flex">
-              <a href={`tel:${site.phone}`} aria-label={`Gọi ${site.phone}`}>
-                <Phone className="size-4" />
-                <span className="tabular-nums">{site.phone}</span>
-              </a>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              aria-label={open ? "Đóng menu" : "Mở menu"}
-              aria-expanded={open}
-              aria-controls="menu-di-dong"
-              onClick={() => setOpen((v) => !v)}
-            >
-              {open ? <X className="size-5" /> : <Menu className="size-5" />}
-            </Button>
+            <div className="flex items-center gap-1.5">
+              <Button asChild variant="ghost" size="icon" aria-label="Tìm kiếm">
+                <Link href="/tim-kiem">
+                  <Search className="size-5" />
+                </Link>
+              </Button>
+              <Button asChild variant="sun" className="hidden lg:inline-flex">
+                <a href={`tel:${site.phone}`} aria-label={`Gọi ${site.phone}`}>
+                  <Phone className="size-4" />
+                  <span className="tabular-nums">{site.phone}</span>
+                </a>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                aria-label={open ? "Đóng menu" : "Mở menu"}
+                aria-expanded={open}
+                aria-controls="menu-di-dong"
+                onClick={() => setOpen((v) => !v)}
+              >
+                {open ? <X className="size-5" /> : <Menu className="size-5" />}
+              </Button>
+            </div>
           </div>
         </Container>
 
         {open && (
-          <div id="menu-di-dong" className="fixed inset-x-0 bottom-0 top-[76px] overflow-y-auto bg-white lg:hidden">
+          <div id="menu-di-dong" className="fixed inset-x-0 bottom-0 top-[84px] overflow-y-auto bg-paper lg:hidden">
             <Container className="flex flex-col py-6">
               <nav aria-label="Điều hướng di động" className="flex flex-col">
                 {links.map((item) => {
@@ -124,7 +127,7 @@ export function SiteHeader({ site, nav }: Pick<SiteContent, "site" | "nav">) {
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "rounded-xl px-4 py-4 text-lg font-medium transition-colors",
-                        active ? "bg-surface text-brand-900" : "text-ink hover:bg-surface"
+                        active ? "bg-white text-brand-900" : "text-ink hover:bg-white",
                       )}
                     >
                       {item.label}

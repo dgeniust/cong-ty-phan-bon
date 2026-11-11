@@ -103,61 +103,63 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
   return (
     <>
       <JsonLd data={structured} />
-      <Container className="pt-8">
-        <Breadcrumbs items={crumbs} />
-      </Container>
+      <div className="bg-paper">
+        <Container className="pt-8">
+          <Breadcrumbs items={crumbs} />
+        </Container>
 
-      <Container className="grid gap-10 pb-16 pt-8 md:pb-24 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-        <ProductGallery images={product.images} alt={product.name} />
+        <Container className="grid gap-10 pb-16 pt-8 md:pb-24 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+          <ProductGallery images={product.images} alt={product.name} />
 
-        <div className="lg:pt-2">
-          <div className="flex flex-wrap items-center gap-2">
-            {category && (
-              <Link href={`/danh-muc/${category.slug}`} className="text-sm font-medium text-brand-600 hover:text-brand-800">
-                {category.name}
-              </Link>
-            )}
-            {product.isNew && <Badge variant="sun">Mới</Badge>}
-            {product.featured && <Badge>Bán chạy</Badge>}
+          <div className="lg:pt-2">
+            <div className="flex flex-wrap items-center gap-2">
+              {category && (
+                <Link href={`/danh-muc/${category.slug}`} className="text-sm font-medium text-brand-600 hover:text-brand-800">
+                  {category.name}
+                </Link>
+              )}
+              {product.isNew && <Badge variant="sun">Mới</Badge>}
+              {product.featured && <Badge>Bán chạy</Badge>}
+            </div>
+            <h1 className="display mt-3 text-[2rem] md:text-[2.75rem]">{product.name}</h1>
+            <p className="mt-4 text-lg leading-relaxed text-ink-muted">{product.shortDescription}</p>
+
+            <dl className="mt-8 rounded-2xl bg-white px-5 py-2 sm:px-6">
+              <Spec label="Mã sản phẩm">
+                <span className="tabular-nums">{product.sku}</span>
+              </Spec>
+              <Spec label="Quy cách">{product.packing.join(", ")}</Spec>
+              <Spec label="Xuất xứ">{product.origin}</Spec>
+              <Spec label="Phù hợp cho">{product.crops.join(", ")}</Spec>
+              <Spec label="Giá bán">
+                <span className="text-brand-700">Liên hệ để nhận báo giá theo số lượng</span>
+              </Spec>
+            </dl>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button asChild variant="sun" size="lg" className="sm:flex-1">
+                <a href={`tel:${site.phone}`}>
+                  <Phone /> Gọi đặt hàng <span className="tabular-nums">{site.phone}</span>
+                </a>
+              </Button>
+              <Button asChild size="lg" className="sm:flex-1">
+                <Link href={`/lien-he?san-pham=${product.slug}`}>
+                  <MessageCircle /> Nhận tư vấn
+                </Link>
+              </Button>
+            </div>
+
+            <ul className="mt-8 space-y-3">
+              {TRUST.map(({ icon: Icon, label }) => (
+                <li key={label} className="flex items-center gap-3 text-[15px] text-ink-muted">
+                  <Icon className="size-5 shrink-0 text-brand-600" strokeWidth={1.75} aria-hidden />
+                  {label}
+                </li>
+              ))}
+            </ul>
           </div>
-          <h1 className="mt-3 text-[2rem] font-bold leading-[1.15] tracking-tight text-brand-900 md:text-[2.5rem]">{product.name}</h1>
-          <p className="mt-4 text-lg leading-relaxed text-ink-muted">{product.shortDescription}</p>
-
-          <dl className="mt-8 rounded-2xl bg-surface px-5 py-2 sm:px-6">
-            <Spec label="Mã sản phẩm">
-              <span className="tabular-nums">{product.sku}</span>
-            </Spec>
-            <Spec label="Quy cách">{product.packing.join(", ")}</Spec>
-            <Spec label="Xuất xứ">{product.origin}</Spec>
-            <Spec label="Phù hợp cho">{product.crops.join(", ")}</Spec>
-            <Spec label="Giá bán">
-              <span className="text-brand-700">Liên hệ để nhận báo giá theo số lượng</span>
-            </Spec>
-          </dl>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button asChild variant="sun" size="lg" className="sm:flex-1">
-              <a href={`tel:${site.phone}`}>
-                <Phone /> Gọi đặt hàng <span className="tabular-nums">{site.phone}</span>
-              </a>
-            </Button>
-            <Button asChild size="lg" className="sm:flex-1">
-              <Link href={`/lien-he?san-pham=${product.slug}`}>
-                <MessageCircle /> Nhận tư vấn
-              </Link>
-            </Button>
-          </div>
-
-          <ul className="mt-8 space-y-3">
-            {TRUST.map(({ icon: Icon, label }) => (
-              <li key={label} className="flex items-center gap-3 text-[15px] text-ink-muted">
-                <Icon className="size-5 shrink-0 text-brand-600" strokeWidth={1.75} aria-hidden />
-                {label}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Container>
+        </Container>
+      </div>
 
       {/* All detail content is rendered in the HTML (not hidden in tabs) so it's crawlable and scannable. */}
       <div className="bg-surface py-16 md:py-24">
@@ -166,7 +168,10 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
             <ul className="sticky top-28 space-y-1">
               {SECTIONS.map((s) => (
                 <li key={s.id}>
-                  <a href={`#${s.id}`} className="block rounded-xl px-4 py-2.5 text-[15px] text-ink-muted transition-colors hover:bg-white hover:text-brand-900">
+                  <a
+                    href={`#${s.id}`}
+                    className="block rounded-xl px-4 py-2.5 text-[15px] text-ink-muted transition-colors hover:bg-white hover:text-brand-900"
+                  >
                     {s.label}
                   </a>
                 </li>

@@ -78,7 +78,7 @@ export async function ArticleDetailPage({ section, slug }: { section: ArticleSec
     <>
       <JsonLd data={structured} />
       <article>
-        <header className="bg-surface pb-20 pt-8 md:pb-28 md:pt-10">
+        <header className="bg-paper pb-20 pt-8 md:pb-28 md:pt-10">
           <Container className="max-w-6xl">
             <Breadcrumbs items={[{ label: meta.title, href: `/${section}` }, { label: article.title }]} />
             <div className="mt-10 max-w-3xl">
