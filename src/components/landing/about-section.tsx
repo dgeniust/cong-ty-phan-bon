@@ -1,54 +1,59 @@
-import { ChevronRight, Leaf } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/shared/container";
 import { SmartImage } from "@/components/shared/smart-image";
 import type { SiteContent } from "@/lib/content/schema";
 import { getIcon } from "@/lib/icons";
+import { resolveHref } from "@/lib/site";
 
 export function AboutSection({ about }: { about: SiteContent["about"] }) {
   return (
-    <section id="gioi-thieu" className="scroll-mt-20 bg-brand-50 py-14 md:py-16">
-      <Container className="grid items-center gap-8 lg:grid-cols-[1.1fr_1.2fr_0.75fr]">
-        <div className="relative aspect-16/10 overflow-hidden rounded-2xl shadow-soft">
-          <SmartImage src={about.image} alt={about.title} fill sizes="(min-width: 1024px) 35vw, 100vw" className="object-cover" />
-          <div className="absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-white/90 via-white/50 to-transparent" />
-          <p className="absolute left-6 top-5 whitespace-pre-line font-script text-2xl leading-tight text-brand-800 md:text-3xl">
-            {about.quote}
-          </p>
-        </div>
+    <section id="gioi-thieu" aria-labelledby="gioi-thieu-title" className="py-20 md:py-28">
+      <Container className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <figure className="relative">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-surface sm:aspect-[4/3] lg:aspect-[4/5]">
+            <SmartImage src={about.image} alt={about.title} fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+          </div>
+          {about.quote && (
+            <figcaption className="absolute -bottom-6 left-6 right-6 rounded-2xl bg-brand-900 px-7 py-6 shadow-lift sm:right-auto sm:max-w-sm lg:-right-10 lg:left-auto">
+              <p className="whitespace-pre-line font-script text-[1.75rem] leading-snug text-sun-200">{about.quote}</p>
+            </figcaption>
+          )}
+        </figure>
 
-        <div>
-          <h2 className="flex items-center gap-2 text-2xl font-bold uppercase text-brand-700">
-            <Leaf className="size-6 fill-brand-400 text-brand-600" aria-hidden />
+        <div className="pt-6 lg:pt-0">
+          <h2 id="gioi-thieu-title" className="text-[1.75rem] font-bold leading-tight tracking-tight text-brand-900 md:text-[2.25rem]">
             {about.title}
           </h2>
-          <div className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted">
+          <span className="rule-sun" aria-hidden />
+          <div className="mt-6 space-y-4 text-base leading-relaxed text-ink-muted md:text-[17px]">
             {about.paragraphs.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
           </div>
+
+          {about.highlights.length > 0 && (
+            <ul className="mt-10 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+              {about.highlights.map((h, i) => {
+                const Icon = getIcon(h.icon);
+                return (
+                  <li key={i} className="flex items-center gap-3.5">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700">
+                      <Icon className="size-5" strokeWidth={1.75} aria-hidden />
+                    </span>
+                    <span className="text-[15px] font-medium text-brand-900">{h.title}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+
           {about.ctaLabel && (
-            <Button asChild variant="sun" className="mt-6">
-              <a href={about.ctaHref}>
-                {about.ctaLabel} <ChevronRight />
-              </a>
+            <Button asChild className="mt-10">
+              <Link href={resolveHref(about.ctaHref)}>{about.ctaLabel}</Link>
             </Button>
           )}
         </div>
-
-        <ul className="grid gap-4 rounded-2xl bg-white/80 p-5 shadow-soft sm:grid-cols-2 lg:grid-cols-1">
-          {about.highlights.map((h, i) => {
-            const Icon = getIcon(h.icon);
-            return (
-              <li key={i} className="flex items-center gap-3">
-                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-sun-300/60 text-brand-700">
-                  <Icon className="size-5" aria-hidden />
-                </span>
-                <span className="text-sm font-medium text-brand-800">{h.title}</span>
-              </li>
-            );
-          })}
-        </ul>
       </Container>
     </section>
   );

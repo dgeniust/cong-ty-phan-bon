@@ -15,7 +15,7 @@ type SP = Promise<{ q?: string; loai?: string }>;
 
 export async function generateMetadata({ searchParams }: { searchParams: SP }): Promise<Metadata> {
   const { q } = await searchParams;
-  return { title: q ? `Tìm kiếm "${q}" | Kim Ngoan` : "Tìm kiếm | Kim Ngoan", robots: { index: false } };
+  return { title: q ? `Tìm kiếm “${q}”` : "Tìm kiếm", robots: { index: false, follow: true } };
 }
 
 const TABS = [
@@ -41,8 +41,8 @@ export default async function SearchPage({ searchParams }: { searchParams: SP })
         description={query ? undefined : "Nhập tên sản phẩm, loại cây trồng hoặc chủ đề bạn quan tâm."}
         crumbs={[{ label: "Tìm kiếm" }]}
       />
-      <Container className="py-10 md:py-14">
-        <form action="/tim-kiem" role="search" className="relative mx-auto max-w-2xl">
+      <Container className="-mt-7 pb-20 md:pb-28">
+        <form action="/tim-kiem" role="search" className="relative max-w-2xl">
           <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-ink-muted" aria-hidden />
           <Input
             name="q"
@@ -50,7 +50,7 @@ export default async function SearchPage({ searchParams }: { searchParams: SP })
             defaultValue={query}
             placeholder="Tìm sản phẩm, bài viết…"
             aria-label="Từ khoá tìm kiếm"
-            className="h-14 rounded-full bg-white pl-12 pr-32 text-base shadow-soft"
+            className="h-14 rounded-full border-transparent bg-white pl-12 pr-32 text-base shadow-soft hover:border-transparent"
           />
           <Button type="submit" variant="sun" className="absolute right-2 top-1/2 -translate-y-1/2">
             Tìm kiếm
@@ -58,11 +58,11 @@ export default async function SearchPage({ searchParams }: { searchParams: SP })
         </form>
 
         {!query ? (
-          <div className="mt-8 text-center">
-            <p className="text-sm text-ink-muted">Gợi ý tìm kiếm:</p>
-            <div className="mt-3 flex flex-wrap justify-center gap-2">
+          <div className="mt-10">
+            <p className="text-[15px] text-ink-muted">Bà con hay tìm</p>
+            <div className="mt-4 flex flex-wrap gap-2">
               {SUGGESTIONS.map((s) => (
-                <Link key={s} href={`/tim-kiem?q=${encodeURIComponent(s)}`} className="rounded-full border bg-white px-4 py-1.5 text-sm hover:bg-muted hover:text-brand-700">
+                <Link key={s} href={`/tim-kiem?q=${encodeURIComponent(s)}`} className="inline-flex h-10 items-center rounded-full bg-surface px-4 text-sm font-medium text-ink transition-colors hover:bg-surface-strong hover:text-brand-900">
                   {s}
                 </Link>
               ))}
@@ -71,19 +71,19 @@ export default async function SearchPage({ searchParams }: { searchParams: SP })
         ) : (
           <>
             <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
-              <p className="text-ink-muted">
-                Tìm thấy <span className="font-bold text-brand-800">{counts["tat-ca"]}</span> kết quả cho{" "}
+              <p className="text-[15px] text-ink-muted" aria-live="polite">
+                Tìm thấy <span className="font-semibold text-brand-900">{counts["tat-ca"]}</span> kết quả cho{" "}
                 <span className="font-semibold text-brand-700">“{query}”</span>
               </p>
-              <nav aria-label="Lọc kết quả" className="flex gap-1 rounded-2xl border bg-white p-1 shadow-xs">
+              <nav aria-label="Lọc kết quả" className="flex gap-1 rounded-full bg-surface p-1">
                 {TABS.map((t) => (
                   <Link
                     key={t.value}
                     href={`/tim-kiem?q=${encodeURIComponent(query)}&loai=${t.value}`}
                     aria-current={loai === t.value ? "page" : undefined}
                     className={cn(
-                      "rounded-xl px-3 py-1.5 text-sm font-medium transition",
-                      loai === t.value ? "bg-brand-600 text-white" : "text-ink-muted hover:text-brand-700"
+                      "inline-flex h-9 items-center rounded-full px-4 text-sm font-medium transition-colors",
+                      loai === t.value ? "bg-white text-brand-900 shadow-soft" : "text-ink-muted hover:text-brand-900"
                     )}
                   >
                     {t.label} <span className="opacity-75">({counts[t.value]})</span>
@@ -95,8 +95,8 @@ export default async function SearchPage({ searchParams }: { searchParams: SP })
             {!showProducts && !showArticles && (
               <div className="mt-8">
                 <EmptyState
-                  title="Không tìm thấy kết quả phù hợp"
-                  description="Hãy thử từ khoá khác, kiểm tra chính tả hoặc dùng từ ngắn gọn hơn (VD: “NPK”, “cà phê”)."
+                  title="Chưa có kết quả cho từ khoá này"
+                  description="Thử từ khoá ngắn hơn hoặc tên cây trồng, ví dụ “NPK”, “cà phê”. Bạn cũng có thể gọi để được tư vấn trực tiếp."
                 >
                   <Button asChild variant="sun">
                     <Link href="/san-pham">Xem tất cả sản phẩm</Link>
@@ -107,8 +107,8 @@ export default async function SearchPage({ searchParams }: { searchParams: SP })
 
             {showProducts && (
               <section className="mt-10">
-                <h2 className="mb-5 text-xl font-bold text-brand-700">Sản phẩm ({results.products.length})</h2>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <h2 className="mb-6 text-xl font-semibold text-brand-900">Sản phẩm ({results.products.length})</h2>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-4">
                   {results.products.map((p) => (
                     <ProductCard key={p.slug} product={p} />
                   ))}
@@ -117,9 +117,9 @@ export default async function SearchPage({ searchParams }: { searchParams: SP })
             )}
 
             {showArticles && (
-              <section className="mt-12">
-                <h2 className="mb-5 text-xl font-bold text-brand-700">Bài viết ({results.articles.length})</h2>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <section className="mt-16">
+                <h2 className="mb-6 text-xl font-semibold text-brand-900">Bài viết ({results.articles.length})</h2>
+                <div className="grid gap-x-6 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
                   {results.articles.map((a) => (
                     <ArticleCard key={a.slug} article={a} />
                   ))}
